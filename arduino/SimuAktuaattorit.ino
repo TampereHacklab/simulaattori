@@ -14,8 +14,8 @@ struct Actuator {
   int endStop;
 };
 
-const int ACT_COUNT = 1;
-Actuator act[3];
+const int ACT_COUNT = 3;
+Actuator act[ACT_COUNT];
 
 const int ledPin = 13;       // the pin that the LED is attached to
 
