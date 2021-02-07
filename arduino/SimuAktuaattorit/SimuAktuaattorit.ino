@@ -6,10 +6,13 @@
 
 // Represents one actuator
 struct Actuator {
-  int endPin;
+  // Pins:
+  int endPin; // Inverted, use pulldown resistor
   int pulsePin1;
   int pulsePin2;
   int directionPin;
+  int speedPin;
+  // Data:
   int direction; // 0 = down, 1 = up
   int endStop;
 };
@@ -24,9 +27,9 @@ int buttonPushCounter = 0;   // counter for the number of button presses
 unsigned int loopCounter = 0;
 
 void setup() {
-  act[0] = {2, 3, 4, 11, 0, 0};
-  act[1] = {5, 6, 7, 12, 0, 0};
-  act[2] = {8, 9, 10, 22, 0, 0};
+  act[0] = {30, 31, 32, 33, 10, 0 ,0};
+  act[1] = {40, 41, 42, 43, 11, 0, 0};
+  act[2] = {50, 51, 52, 53, 12, 0, 0};
   for(int a;a<ACT_COUNT;a++) {
       pinMode(act[a].endPin, INPUT);
       pinMode(act[a].pulsePin1, INPUT);
@@ -42,18 +45,20 @@ void setup() {
 
 void loop() {
   for(int a=0;a<ACT_COUNT;a++) {
-     act[a].endStop = digitalRead(act[a].endPin);
+     act[a].endStop = !digitalRead(act[a].endPin);
      if(act[a].endStop) {
         act[a].direction = 1;
         buttonPushCounter++;
      }
      digitalWrite(act[a].directionPin, act[a].direction);
+     analogWrite(act[a].speedPin, 50); // About 1 Volt, should turn motor
   }
   buttonPushCounter++;
 
   // Debug output
-  if(loopCounter > 100) {
+  if(loopCounter > 300) {
     for(int a=0;a<ACT_COUNT;a++) {
+        // act[a].direction = !act[a].direction;
         Serial.println("----------------");
         Serial.print("Actuator ");
         Serial.print(a);
